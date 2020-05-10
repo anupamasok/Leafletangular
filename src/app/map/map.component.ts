@@ -2,6 +2,8 @@ import { AfterViewInit, Component } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet.heat';
 import * as geolib from 'geolib';
+import { MapService } from '../map.service';
+import { Item, Patient } from '../models/Item';
 
 @Component({
   selector: 'app-map',
@@ -10,32 +12,65 @@ import * as geolib from 'geolib';
 })
 export class MapComponent implements AfterViewInit {
   private map;
+  items: Item[];
+  flag: boolean;
 
-  constructor() {}
+  patients: Patient[];
 
-  ngAfterViewInit(): void {
-    this.initMap();
+  constructor(private mapService: MapService) {}
+  ngOnInit() {
+    this.flag = false;
+
+    console.log('Ng On init Ran');
+    this.mapService.getItems().subscribe((items) => {
+      console.log('items');
+      console.log(items);
+      this.items = items;
+
+      this.flag = true;
+      var itemList = this.items;
+
+      // Call Draw Map Here
+      this.initMap();
+
+      // Get Patients here and set the intensity based on that
+      //
+      // console.log('itemsList');
+      // for (var i = 0; i < itemList.length; i++) {
+      //   this.mapService.getPatients(itemList[i].id).subscribe((items) => {
+      //     console.log(items);
+      //   });
+      // }
+    });
   }
 
+  ngAfterViewInit(): void {}
+
   private initMap(): void {
+    var geoPointValues = [];
+
+    this.items.forEach((element) => {
+      geoPointValues.push([
+        element.geopoint.latitude,
+        element.geopoint.longitude,
+        1,
+      ]);
+    });
+
     // using geolib library we can convert
     // sexagecimal inputs to decimal values. So
     // if the data is int sexagecimal, we just need
     // to run the data convert it using the below
     // sexagesimalToDecimal function
     var x1 = geolib.sexagesimalToDecimal(`9° 58' 37" N`);
-    var x2 = geolib.sexagesimalToDecimal(`9° 58' 40" N`);
-    var x3 = geolib.sexagesimalToDecimal(`9° 58' 41" N`);
     var y1 = geolib.sexagesimalToDecimal(`76° 16' 38" E`);
-    var y2 = geolib.sexagesimalToDecimal(`76° 16' 39" E`);
-    var y3 = geolib.sexagesimalToDecimal(`76° 16' 38" E`);
 
     // this part creates the map using Leaflet
     // we can specifyt the default place the map centers in to
     // and the zoom level the map starts from.
     this.map = L.map('map', {
-      center: [x1, y1],
-      zoom: 19,
+      center: [x1, y1], // Set Map Centered in Initialize Here
+      zoom: 19, // Set default Zoom in HERE
     });
 
     // 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -51,21 +86,11 @@ export class MapComponent implements AfterViewInit {
     tiles.addTo(this.map);
 
     // for reference : https://github.com/Leaflet/Leaflet.heat
-    L.heatLayer(
-      [
-        [-25.290917, -57.5428, 0.2], // lat, lng, intensity
-        [x2, y2, 0.95], // lat, lng, intensity
-        [x1, y1, 0.75], // lat, lng, intensity
-        [x3, y3, 0.75], // lat, lng, intensity
-        [-25.290474, -57.542227, 0.5],
-        [-25.290074, -57.543067, 0.6],
-      ],
-      {
-        radius: 100,
-        minOpacity: 0.35,
-        blur: 15,
-        // gradient: { 0.4: 'blue', 0.65: 'lime', 1: 'red' },
-      }
-    ).addTo(this.map);
+    L.heatLayer(geoPointValues, {
+      radius: 50,
+      minOpacity: 0.25,
+      blur: 35,
+      // gradient: { 0.4: 'blue', 0.65: 'lime', 1: 'red' },
+    }).addTo(this.map);
   }
 }

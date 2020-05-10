@@ -2,8 +2,30 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+// export const environment = {
+//   production: false,
+//   firebaseConfig: {
+//     apiKey: 'AIzaSyB8fOrevESP5QEfphcWfoQMgLSgHIGmtuI',
+//     authDomain: 'myproject-dc00a.firebaseapp.com',
+//     databaseURL: 'https://myproject-dc00a.firebaseio.com',
+//     projectId: 'myproject-dc00a',
+//     storageBucket: 'myproject-dc00a.appspot.com',
+//     messagingSenderId: '790277369600',
+//     appId: '1:790277369600:web:fbdc39b09f9af1553fcde5',
+//   },
+// };
 export const environment = {
-  production: false
+  production: false,
+  firebaseConfig: {
+    apiKey: 'AIzaSyC07aStcHa1MS0zosefs2CLHJydqukK8YU',
+    authDomain: 'covid-map-trace.firebaseapp.com',
+    databaseURL: 'https://covid-map-trace.firebaseio.com',
+    projectId: 'covid-map-trace',
+    storageBucket: 'covid-map-trace.appspot.com',
+    messagingSenderId: '1038085926962',
+    appId: '1:1038085926962:web:5754a25dffaf42c19b0c2b',
+    measurementId: 'G-TRG7B8ZRLL',
+  },
 };
 
 /*

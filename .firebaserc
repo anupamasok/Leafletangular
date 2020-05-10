@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "covid-map-trace": {
+      "hosting": {
+        "mapsApp": [
+          "covid-map-trace"
+        ]
+      }
+    }
+  }
+}
